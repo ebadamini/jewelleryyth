@@ -39,7 +39,7 @@ class EditAccountPage extends StatelessWidget {
                 initialDescription: account.description,
                 initialAddress: account.address,
                 submitLabel: 'Save Changes',
-                isLoading: state.status == AccountsStatus.loading,
+                isLoading: state.listStatus == AccountsListStatus.loading,
                 onSubmit: ({
                   required String name,
                   required type,

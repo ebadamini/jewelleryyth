@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
-import '../../../../core/network/api_client.dart';
+import '../../../../core/errors/exceptions.dart';  // ← اضافه شد
 import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/logout_use_case.dart';
@@ -50,10 +49,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       emit(state.copyWith(status: AuthStatus.success, user: user));
-    } on ApiException catch (e) {
+    } on ServerException catch (e) {
       emit(state.copyWith(status: AuthStatus.failure, errorMessage: e.message));
-    } catch (_) {
-      emit(state.copyWith(status: AuthStatus.failure, errorMessage: 'Login failed.'));
+    } on NetworkException catch (e) {
+      emit(state.copyWith(status: AuthStatus.failure, errorMessage: e.message));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.failure, errorMessage: 'Login failed: $e'));
     }
   }
 
@@ -70,10 +71,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       emit(state.copyWith(status: AuthStatus.success, user: user));
-    } on ApiException catch (e) {
+    } on ServerException catch (e) {
       emit(state.copyWith(status: AuthStatus.failure, errorMessage: e.message));
-    } catch (_) {
-      emit(state.copyWith(status: AuthStatus.failure, errorMessage: 'Signup failed.'));
+    } on NetworkException catch (e) {
+      emit(state.copyWith(status: AuthStatus.failure, errorMessage: e.message));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.failure, errorMessage: 'Signup failed: $e'));
     }
   }
 
@@ -89,10 +92,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           errorMessage: null,
         ),
       );
-    } on ApiException catch (e) {
-      emit(state.copyWith(status: AuthStatus.failure, errorMessage: e.message));
-    } catch (_) {
-      emit(state.copyWith(status: AuthStatus.failure, errorMessage: 'Logout failed.'));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.failure, errorMessage: 'Logout failed: $e'));
     }
   }
 }

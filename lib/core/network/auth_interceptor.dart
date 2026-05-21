@@ -1,24 +1,27 @@
-
-
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../storage/secure_token_storage.dart';
 
-class AuthInterceptor extends Interceptor{
-  final SharedPreferences sharedPreferences;
+class AuthInterceptor extends Interceptor {
+  final SecureTokenStorage tokenStorage;
 
-  AuthInterceptor({required this.sharedPreferences});
-  static const String _tokenKey = 'auth_token';
+  AuthInterceptor({required this.tokenStorage});
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handlers) {
-    // 1: Get token from local storage
-    final String? token = sharedPreferences.getString(_tokenKey);
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    final token = await tokenStorage.readAccessToken();
 
-    // 2: if token exists, add it to the handler
-    if(token != null && token.isNotEmpty){
+    if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
 
-    super.onRequest(options, handlers);
+    handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    if (err.response?.statusCode == 401) {
+      // TODO: Handle unauthorized (logout or refresh token)
+    }
+    handler.next(err);
   }
 }

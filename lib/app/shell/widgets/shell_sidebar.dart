@@ -73,10 +73,17 @@ class _SidebarHeader extends StatelessWidget {
   final bool showExpandedLayout;
   final String title;
 
+  static const _textStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w800,
+    color: Color(0xFF111111),
+    fontFamily: 'Vazirmatn', // ← Vazirmatn
+  );
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 84,
+      height: 72,
       padding: EdgeInsets.symmetric(horizontal: showExpandedLayout ? 20 : 10),
       alignment: showExpandedLayout ? Alignment.centerLeft : Alignment.center,
       decoration: const BoxDecoration(
@@ -94,8 +101,8 @@ class _SidebarHeader extends StatelessWidget {
             key: const ValueKey('expanded-header'),
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
                   color: AppTheme.primaryGold,
                   borderRadius: BorderRadius.circular(6),
@@ -103,6 +110,7 @@ class _SidebarHeader extends StatelessWidget {
                 child: const Icon(
                   Icons.diamond_outlined,
                   color: Color(0xFF111111),
+                  size: 20,
                 ),
               ),
               const SizedBox(width: 12),
@@ -112,26 +120,23 @@ class _SidebarHeader extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF111111),
-                  ),
+                  style: _textStyle,
                 ),
               ),
             ],
           )
               : Container(
             key: const ValueKey('collapsed-header'),
-            width: 44,
-            height: 44,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: AppTheme.primaryGold,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
               Icons.diamond_outlined,
               color: Color(0xFF111111),
+              size: 20,
             ),
           ),
         ),

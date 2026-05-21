@@ -20,8 +20,8 @@ class AccountsSearchChanged extends AccountsEvent {
   List<Object?> get props => [query];
 }
 
-class AccountDetailsRequested extends AccountsEvent {
-  const AccountDetailsRequested(this.accountId);
+class AccountDetailsLoaded extends AccountsEvent {
+  const AccountDetailsLoaded(this.accountId);
 
   final int accountId;
 

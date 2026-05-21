@@ -1,27 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/router/app_router.dart';
-import '../../domain/entities/account_entity.dart';
+import '../../../../injection_container.dart';
+import '../../domain/usecases/create_account_use_case.dart';
+import '../../domain/usecases/delete_account_use_case.dart';
+import '../../domain/usecases/get_account_by_id_use_case.dart';
+import '../../domain/usecases/get_account_metals_use_case.dart';
+import '../../domain/usecases/get_accounts_use_case.dart';
+import '../../domain/usecases/get_item_statements_use_case.dart';
+import '../../domain/usecases/get_money_statements_use_case.dart';
+import '../../domain/usecases/update_account_use_case.dart';
 import '../bloc/accounts_bloc.dart';
 import '../widgets/metals_table.dart';
 import '../widgets/money_balances_card.dart';
 
-class AccountDetailsPage extends StatefulWidget {
+class AccountDetailsPage extends StatelessWidget {
   const AccountDetailsPage({super.key, required this.accountId});
 
   final int accountId;
 
   @override
-  State<AccountDetailsPage> createState() => _AccountDetailsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => AccountsBloc(
+        getAccountsUseCase: sl<GetAccountsUseCase>(),
+        getAccountByIdUseCase: sl<GetAccountByIdUseCase>(),
+        createAccountUseCase: sl<CreateAccountUseCase>(),
+        updateAccountUseCase: sl<UpdateAccountUseCase>(),
+        deleteAccountUseCase: sl<DeleteAccountUseCase>(),
+        getMoneyStatementsUseCase: sl<GetMoneyStatementsUseCase>(),
+        getAccountMetalsUseCase: sl<GetAccountMetalsUseCase>(),
+        getItemStatementsUseCase: sl<GetItemStatementsUseCase>(),
+      ),
+      child: _AccountDetailsView(accountId: accountId),
+    );
+  }
 }
 
-class _AccountDetailsPageState extends State<AccountDetailsPage> {
+class _AccountDetailsView extends StatefulWidget {
+  const _AccountDetailsView({required this.accountId});
+
+  final int accountId;
+
+  @override
+  State<_AccountDetailsView> createState() => _AccountDetailsViewState();
+}
+
+class _AccountDetailsViewState extends State<_AccountDetailsView> {
   @override
   void initState() {
     super.initState();
-    // دریافت اطلاعات حساب و فلزات
-    context.read<AccountsBloc>().add(AccountDetailsRequested(widget.accountId));
-    context.read<AccountsBloc>().add(AccountMetalsRequested(widget.accountId));
+    context.read<AccountsBloc>().add(AccountDetailsLoaded(widget.accountId));
   }
 
   @override
@@ -42,20 +71,16 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
               }
             },
           ),
-          // IconButton(
-          //   icon: const Icon(Icons.delete),
-          //   onPressed: () {
-          //     // Add Delete Confirmation Dialog
-          //     context.read<AccountsBloc>().add(AccountDeleted(widget.accountId));
-          //     Navigator.of(context).pop();
-          //   },
-          // ),
         ],
       ),
       body: BlocBuilder<AccountsBloc, AccountsState>(
         builder: (context, state) {
-          if (state.status == AccountsStatus.loading && state.selectedAccount == null) {
+          if (state.detailsStatus == AccountDetailsStatus.loading) {
             return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state.detailsStatus == AccountDetailsStatus.failure) {
+            return Center(child: Text(state.errorMessage ?? 'Error loading account'));
           }
 
           final account = state.selectedAccount;
@@ -66,10 +91,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const SizedBox(height: 20),
-
-                // موجودی پول
                 Text('Money Balances', style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 10),
                 MoneyBalancesCard(
@@ -86,28 +108,30 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
                   },
                 ),
                 const SizedBox(height: 20),
-
-                // موجودی طلا/فلزات
                 Text('Metal Stock', style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 10),
-                if (state.metals.isEmpty)
-                  const Card(child: ListTile(title: Text('No metal stock found')))
-                else
-                  MetalsTable(
-                    items: state.metals,
-                    onViewStatements: (metal) {
-                      Navigator.of(context).pushNamed(
-                        AppRouter.itemStatementsRoute,
-                        arguments: {
-                          'accountId': widget.accountId,
-                          'accountName': account.name,
-                          'itemId': metal.itemId,
-                          'itemName': metal.itemName,
-                          'availableItems': state.metals,
-                        },
-                      );
-                    },
-                  ),
+                if (state.metalsStatus == MetalsStatus.loading)
+                  const Center(child: CircularProgressIndicator())
+                else if (state.metalsStatus == MetalsStatus.failure)
+                  Card(child: ListTile(title: Text('Error: ${state.errorMessage}')))
+                else if (state.metals.isEmpty)
+                    const Card(child: ListTile(title: Text('No metal stock found')))
+                  else
+                    MetalsTable(
+                      items: state.metals,
+                      onViewStatements: (metal) {
+                        Navigator.of(context).pushNamed(
+                          AppRouter.itemStatementsRoute,
+                          arguments: {
+                            'accountId': widget.accountId,
+                            'accountName': account.name,
+                            'itemId': metal.itemId,
+                            'itemName': metal.itemName,
+                            'availableItems': state.metals,
+                          },
+                        );
+                      },
+                    ),
               ],
             ),
           );

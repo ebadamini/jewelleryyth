@@ -13,6 +13,7 @@ class AccountResponseDto {
     required this.address,
     required this.metalBalance,
     required this.moneyBalances,
+    required this.createdAt,
   });
 
   final int id;
@@ -24,6 +25,7 @@ class AccountResponseDto {
   final String address;
   final double metalBalance;
   final List<MoneyBalanceDto> moneyBalances;
+  final String createdAt;
 
   factory AccountResponseDto.fromJson(Map<String, dynamic> json) {
     final balances = (json['moneyBalances'] as List<dynamic>? ?? [])
@@ -40,6 +42,7 @@ class AccountResponseDto {
       address: json['address']?.toString() ?? '',
       metalBalance: (json['metalBalance'] as num?)?.toDouble() ?? 0,
       moneyBalances: balances,
+      createdAt: json['createdAt']?.toString() ?? '',
     );
   }
 
@@ -54,6 +57,7 @@ class AccountResponseDto {
       address: address,
       metalBalance: metalBalance,
       moneyBalances: moneyBalances.map((e) => e.toEntity()).toList(),
+      createdAt: createdAt,
     );
   }
 }

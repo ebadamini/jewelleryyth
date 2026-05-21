@@ -38,7 +38,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
         super(const AccountsState()) {
     on<AccountsRequested>(_onAccountsRequested);
     on<AccountsSearchChanged>(_onAccountsSearchChanged);
-    on<AccountDetailsRequested>(_onAccountDetailsRequested);
+    on<AccountDetailsLoaded>(_onAccountDetailsLoaded);
     on<AccountCreated>(_onAccountCreated);
     on<AccountUpdated>(_onAccountUpdated);
     on<AccountDeleted>(_onAccountDeleted);
@@ -60,16 +60,16 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       AccountsRequested event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true, lastActionSuccess: false));
+    emit(state.copyWith(listStatus: AccountsListStatus.loading, clearError: true, lastActionSuccess: false));
     try {
       final accounts = await _getAccountsUseCase();
       emit(state.copyWith(
-        status: AccountsStatus.success,
+        listStatus: AccountsListStatus.success,
         accounts: accounts,
         filteredAccounts: _applySearch(accounts, state.searchQuery),
       ));
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(listStatus: AccountsListStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -83,16 +83,37 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
     ));
   }
 
-  Future<void> _onAccountDetailsRequested(
-      AccountDetailsRequested event,
+  Future<void> _onAccountDetailsLoaded(
+      AccountDetailsLoaded event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true));
+    emit(state.copyWith(
+      detailsStatus: AccountDetailsStatus.loading,
+      metalsStatus: MetalsStatus.loading,
+      clearError: true,
+    ));
+
     try {
-      final account = await _getAccountByIdUseCase(event.accountId);
-      emit(state.copyWith(status: AccountsStatus.success, selectedAccount: account));
+      final results = await Future.wait([
+        _getAccountByIdUseCase(event.accountId),
+        _getAccountMetalsUseCase(event.accountId),
+      ]);
+
+      final account = results[0] as AccountEntity;
+      final metals = results[1] as List<MetalBalanceEntity>;
+
+      emit(state.copyWith(
+        detailsStatus: AccountDetailsStatus.success,
+        metalsStatus: MetalsStatus.success,
+        selectedAccount: account,
+        metals: metals,
+      ));
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(
+        detailsStatus: AccountDetailsStatus.failure,
+        metalsStatus: MetalsStatus.failure,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
@@ -100,7 +121,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       AccountCreated event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true, lastActionSuccess: false));
+    emit(state.copyWith(listStatus: AccountsListStatus.loading, clearError: true, lastActionSuccess: false));
     try {
       final account = await _createAccountUseCase(
         name: event.name,
@@ -111,13 +132,13 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
         address: event.address,
       );
       emit(state.copyWith(
-        status: AccountsStatus.success,
+        listStatus: AccountsListStatus.success,
         selectedAccount: account,
         lastActionSuccess: true,
       ));
       add(const AccountsRequested());
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(listStatus: AccountsListStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -125,7 +146,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       AccountUpdated event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true, lastActionSuccess: false));
+    emit(state.copyWith(detailsStatus: AccountDetailsStatus.loading, clearError: true, lastActionSuccess: false));
     try {
       final account = await _updateAccountUseCase(
         id: event.id,
@@ -137,14 +158,13 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
         address: event.address,
       );
       emit(state.copyWith(
-        status: AccountsStatus.success,
+        detailsStatus: AccountDetailsStatus.success,
         selectedAccount: account,
         lastActionSuccess: true,
       ));
-      add(AccountDetailsRequested(account.id));
-      add(AccountMetalsRequested(account.id));
+      add(AccountDetailsLoaded(account.id));
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(detailsStatus: AccountDetailsStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -152,11 +172,11 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       AccountDeleted event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true, lastActionSuccess: false));
+    emit(state.copyWith(listStatus: AccountsListStatus.loading, clearError: true, lastActionSuccess: false));
     try {
       await _deleteAccountUseCase(event.accountId);
       emit(state.copyWith(
-        status: AccountsStatus.success,
+        listStatus: AccountsListStatus.success,
         selectedAccount: null,
         moneyStatements: const [],
         metals: const [],
@@ -165,7 +185,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       ));
       add(const AccountsRequested());
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(listStatus: AccountsListStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -173,19 +193,19 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       MoneyStatementsRequested event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true, selectedCurrency: event.currency));
+    emit(state.copyWith(moneyStatementsStatus: MoneyStatementsStatus.loading, clearError: true, selectedCurrency: event.currency));
     try {
       final statements = await _getMoneyStatementsUseCase(
         accountId: event.accountId,
         currency: event.currency,
       );
       emit(state.copyWith(
-        status: AccountsStatus.success,
+        moneyStatementsStatus: MoneyStatementsStatus.success,
         moneyStatements: statements,
         selectedCurrency: event.currency,
       ));
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(moneyStatementsStatus: MoneyStatementsStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -193,12 +213,12 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       AccountMetalsRequested event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true));
+    emit(state.copyWith(metalsStatus: MetalsStatus.loading, clearError: true));
     try {
       final metals = await _getAccountMetalsUseCase(event.accountId);
-      emit(state.copyWith(status: AccountsStatus.success, metals: metals));
+      emit(state.copyWith(metalsStatus: MetalsStatus.success, metals: metals));
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(metalsStatus: MetalsStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -206,19 +226,19 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       ItemStatementsRequested event,
       Emitter<AccountsState> emit,
       ) async {
-    emit(state.copyWith(status: AccountsStatus.loading, clearError: true, selectedItemId: event.itemId));
+    emit(state.copyWith(itemStatementsStatus: ItemStatementsStatus.loading, clearError: true, selectedItemId: event.itemId));
     try {
       final statements = await _getItemStatementsUseCase(
         accountId: event.accountId,
         itemId: event.itemId,
       );
       emit(state.copyWith(
-        status: AccountsStatus.success,
+        itemStatementsStatus: ItemStatementsStatus.success,
         itemStatements: statements,
         selectedItemId: event.itemId,
       ));
     } catch (e) {
-      emit(state.copyWith(status: AccountsStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(itemStatementsStatus: ItemStatementsStatus.failure, errorMessage: e.toString()));
     }
   }
 

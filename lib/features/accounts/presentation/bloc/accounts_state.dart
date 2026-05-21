@@ -1,10 +1,18 @@
 part of 'accounts_bloc.dart';
 
-enum AccountsStatus { initial, loading, success, failure }
+enum AccountsListStatus { initial, loading, success, failure }
+enum AccountDetailsStatus { initial, loading, success, failure }
+enum MetalsStatus { initial, loading, success, failure }
+enum MoneyStatementsStatus { initial, loading, success, failure }
+enum ItemStatementsStatus { initial, loading, success, failure }
 
 class AccountsState extends Equatable {
   const AccountsState({
-    this.status = AccountsStatus.initial,
+    this.listStatus = AccountsListStatus.initial,
+    this.detailsStatus = AccountDetailsStatus.initial,
+    this.metalsStatus = MetalsStatus.initial,
+    this.moneyStatementsStatus = MoneyStatementsStatus.initial,
+    this.itemStatementsStatus = ItemStatementsStatus.initial,
     this.accounts = const [],
     this.filteredAccounts = const [],
     this.selectedAccount,
@@ -18,7 +26,11 @@ class AccountsState extends Equatable {
     this.lastActionSuccess = false,
   });
 
-  final AccountsStatus status;
+  final AccountsListStatus listStatus;
+  final AccountDetailsStatus detailsStatus;
+  final MetalsStatus metalsStatus;
+  final MoneyStatementsStatus moneyStatementsStatus;
+  final ItemStatementsStatus itemStatementsStatus;
   final List<AccountEntity> accounts;
   final List<AccountEntity> filteredAccounts;
   final AccountEntity? selectedAccount;
@@ -32,7 +44,11 @@ class AccountsState extends Equatable {
   final bool lastActionSuccess;
 
   AccountsState copyWith({
-    AccountsStatus? status,
+    AccountsListStatus? listStatus,
+    AccountDetailsStatus? detailsStatus,
+    MetalsStatus? metalsStatus,
+    MoneyStatementsStatus? moneyStatementsStatus,
+    ItemStatementsStatus? itemStatementsStatus,
     List<AccountEntity>? accounts,
     List<AccountEntity>? filteredAccounts,
     AccountEntity? selectedAccount,
@@ -47,7 +63,11 @@ class AccountsState extends Equatable {
     bool? lastActionSuccess,
   }) {
     return AccountsState(
-      status: status ?? this.status,
+      listStatus: listStatus ?? this.listStatus,
+      detailsStatus: detailsStatus ?? this.detailsStatus,
+      metalsStatus: metalsStatus ?? this.metalsStatus,
+      moneyStatementsStatus: moneyStatementsStatus ?? this.moneyStatementsStatus,
+      itemStatementsStatus: itemStatementsStatus ?? this.itemStatementsStatus,
       accounts: accounts ?? this.accounts,
       filteredAccounts: filteredAccounts ?? this.filteredAccounts,
       selectedAccount: selectedAccount ?? this.selectedAccount,
@@ -64,7 +84,11 @@ class AccountsState extends Equatable {
 
   @override
   List<Object?> get props => [
-    status,
+    listStatus,
+    detailsStatus,
+    metalsStatus,
+    moneyStatementsStatus,
+    itemStatementsStatus,
     accounts,
     filteredAccounts,
     selectedAccount,

@@ -1,11 +1,11 @@
-import '../repositories/auth_repository.dart';
+import '../../domain/repositories/auth_repository.dart';
 
 class LogoutUseCase {
   const LogoutUseCase(this._repository);
 
   final AuthRepository _repository;
 
-  Future<void> call() {
-    return _repository.logout();
+  Future<void> call() async {
+    await _repository.logout();
   }
 }

@@ -27,7 +27,7 @@ class CreateAccountPage extends StatelessWidget {
             builder: (context, state) {
               return AccountForm(
                 submitLabel: 'Create',
-                isLoading: state.status == AccountsStatus.loading,
+                isLoading: state.listStatus == AccountsListStatus.loading,
                 onSubmit: ({
                   required String name,
                   required type,

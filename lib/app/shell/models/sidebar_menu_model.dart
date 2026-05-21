@@ -18,10 +18,10 @@ class SidebarSubmenuModel {
   const SidebarSubmenuModel({
     required this.key,
     required this.labelKey,
-    required this.contentKey,
+    required this.isNavigable,
   });
 
   final String key;
   final String labelKey;
-  final String contentKey;
+  final bool isNavigable;
 }

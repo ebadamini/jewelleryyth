@@ -50,24 +50,25 @@ class SidebarMenuTile extends StatelessWidget {
                     curve: Curves.easeInOut,
                     padding: EdgeInsets.symmetric(
                       horizontal: showExpandedLayout ? 14 : 0,
-                      vertical: 14,
+                      vertical: 10,
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
                       color: isParentSelected
                           ? AppTheme.primaryGold.withValues(alpha: 0.14)
                           : const Color(0xFFF8FAFC),
-                      // border: Border.all(
-                      //   color: isParentSelected
-                      //       ? AppTheme.primaryGold.withValues(alpha: 0.35)
-                      //       : Colors.transparent,
-                      // ),
+                      border: Border.all(
+                        color: isParentSelected
+                            ? AppTheme.primaryGold.withValues(alpha: 0.35)
+                            : Colors.transparent,
+                      ),
                     ),
                     child: showExpandedLayout
                         ? Row(
                       children: [
                         Icon(
                           menu.icon,
+                          size: 20,
                           color: isParentSelected
                               ? AppTheme.primaryGoldDark
                               : const Color(0xFF111111),
@@ -80,6 +81,8 @@ class SidebarMenuTile extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
                             style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: 'Vazirmatn',
                               fontWeight: FontWeight.w700,
                               color: isParentSelected
                                   ? AppTheme.primaryGoldDark
@@ -93,6 +96,7 @@ class SidebarMenuTile extends StatelessWidget {
                           duration: const Duration(milliseconds: 180),
                           child: const Icon(
                             Icons.keyboard_arrow_down_rounded,
+                            size: 16,
                             color: Color(0xFF6B7280),
                           ),
                         ),
@@ -101,6 +105,7 @@ class SidebarMenuTile extends StatelessWidget {
                         : Center(
                       child: Icon(
                         menu.icon,
+                        size: 20,
                         color: isParentSelected
                             ? AppTheme.primaryGoldDark
                             : const Color(0xFF111111),
@@ -115,7 +120,7 @@ class SidebarMenuTile extends StatelessWidget {
                   curve: Curves.easeInOut,
                   child: isExpanded
                       ? Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 0),
                     child: Column(
                       children: menu.children.map((submenu) {
                         return _SidebarSubmenuTile(
@@ -159,24 +164,24 @@ class _SidebarSubmenuTile extends StatelessWidget {
           menuKey: submenu.key,
         );
       },
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(10),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeInOut,
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        margin: const EdgeInsets.only(bottom: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.primaryGold.withValues(alpha: 0.14) : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
-          // border: isSelected
-          //     ? Border.all(color: AppTheme.primaryGold.withValues(alpha: 0.35))
-          //     : null,
+          border: isSelected
+              ? Border.all(color: AppTheme.primaryGold.withValues(alpha: 0.35))
+              : null,
         ),
         child: Row(
           children: [
             Container(
-              width: 7,
-              height: 7,
+              width: 6,
+              height: 6,
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppTheme.primaryGoldDark
@@ -184,7 +189,7 @@ class _SidebarSubmenuTile extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 l10n.translate(submenu.labelKey),
@@ -192,6 +197,8 @@ class _SidebarSubmenuTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
                 style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'Vazirmatn',
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   color: isSelected
                       ? AppTheme.primaryGoldDark

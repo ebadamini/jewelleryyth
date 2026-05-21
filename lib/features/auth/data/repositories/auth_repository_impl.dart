@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import '../../../../core/storage/secure_token_storage.dart';
 import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -26,11 +24,10 @@ class AuthRepositoryImpl implements AuthRepository {
       LoginRequestDto(email: email, password: password),
     );
 
-    debugPrint('== REPOSITORY: Trying to save token: ${response.token} =======');
     await _tokenStorage.saveAccessToken(response.token);
-    debugPrint('=== REPOSITORY: Token saved. Verify: ${response.token}');
-    await _tokenStorage.saveTenantId(response.tenantId);
-    debugPrint('=== REPOSITORY: Tenant ID saved. Verify: ${response.tenantId}');
+    if (response.tenantId != null) {
+      await _tokenStorage.saveTenantId(response.tenantId!);
+    }
 
     return response.toEntity();
   }
@@ -54,25 +51,21 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     await _tokenStorage.saveAccessToken(response.token);
-    await _tokenStorage.saveTenantId(response.tenantId);
+    if (response.tenantId != null) {
+      await _tokenStorage.saveTenantId(response.tenantId!);
+    }
 
     return response.toEntity();
   }
 
   @override
   Future<void> logout() async {
-    final token = await _tokenStorage.readAccessToken();
-
-    if (token != null && token.isNotEmpty) {
-      try{
-        await _remoteDataSource.logout(accessToken: token);
-      }catch (e){
-        debugPrint('Logout API call failed. (Ignoring): $e');
-      }
-
-      await _tokenStorage.clearAll();
-    }
-
+    // No API call - just clear local tokens
     await _tokenStorage.clearAll();
+  }
+
+  @override
+  Future<bool> checkAuthSession() async {
+    return await _tokenStorage.hasSession();
   }
 }

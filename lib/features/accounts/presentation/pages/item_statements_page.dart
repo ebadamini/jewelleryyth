@@ -74,7 +74,7 @@ class _ItemStatementsPageState extends State<ItemStatementsPage> {
             Expanded(
               child: BlocBuilder<AccountsBloc, AccountsState>(
                 builder: (context, state) {
-                  if (state.status == AccountsStatus.loading) {
+                  if (state.listStatus == AccountsListStatus.loading) {
                     return const Center(child: AppLoadingIndicator(size: 28));
                   }
                   if (state.itemStatements.isEmpty) {

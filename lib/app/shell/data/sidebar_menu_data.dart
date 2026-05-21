@@ -12,31 +12,31 @@ class SidebarMenuData {
         SidebarSubmenuModel(
           key: 'dashboard_home',
           labelKey: 'dashboardHome',
-          contentKey: '/dashboard',
+          isNavigable: true,  // ← توی IndexedStack
         ),
         SidebarSubmenuModel(
           key: 'dashboard_analytics',
           labelKey: 'analytics',
-          contentKey: '/dashboard',
+          isNavigable: true,
         ),
       ],
     ),
     SidebarMenuModel(
-        key: 'accounts',
-        labelKey: 'accounts',
-        icon: Icons.account_balance_wallet_outlined,
-        children: [
-          SidebarSubmenuModel(
-              key: 'accounts_list',
-              labelKey: 'accountsList',
-              contentKey: 'accounts_list',
-          ),
-          SidebarSubmenuModel(
-            key: 'accounts_create',
-            labelKey: 'createAccount',
-            contentKey: 'accounts_create',
-          ),
-        ],
+      key: 'accounts',
+      labelKey: 'accounts',
+      icon: Icons.account_balance_wallet_outlined,
+      children: [
+        SidebarSubmenuModel(
+          key: 'accounts_list',
+          labelKey: 'accountsList',
+          isNavigable: true,
+        ),
+        SidebarSubmenuModel(
+          key: 'accounts_create',
+          labelKey: 'createAccount',
+          isNavigable: false,  // ← با Navigator.push
+        ),
+      ],
     ),
     SidebarMenuModel(
       key: 'customers',
@@ -46,12 +46,13 @@ class SidebarMenuData {
         SidebarSubmenuModel(
           key: 'customers_list',
           labelKey: 'customerList',
-          contentKey: '/dashboard',
+          isNavigable: false,
+
         ),
         SidebarSubmenuModel(
           key: 'customers_add',
           labelKey: 'addCustomer',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
       ],
     ),
@@ -63,12 +64,12 @@ class SidebarMenuData {
         SidebarSubmenuModel(
           key: 'orders_list',
           labelKey: 'ordersList',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
         SidebarSubmenuModel(
           key: 'orders_create',
           labelKey: 'newOrder',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
       ],
     ),
@@ -80,12 +81,12 @@ class SidebarMenuData {
         SidebarSubmenuModel(
           key: 'inventory_gold',
           labelKey: 'goldStock',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
         SidebarSubmenuModel(
           key: 'inventory_waste',
           labelKey: 'wasteRecovery',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
       ],
     ),
@@ -97,12 +98,12 @@ class SidebarMenuData {
         SidebarSubmenuModel(
           key: 'reports_financial',
           labelKey: 'financialReports',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
         SidebarSubmenuModel(
           key: 'reports_customers',
           labelKey: 'customerReports',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
       ],
     ),
@@ -114,12 +115,12 @@ class SidebarMenuData {
         SidebarSubmenuModel(
           key: 'settings_general',
           labelKey: 'generalSettings',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
         SidebarSubmenuModel(
           key: 'settings_language',
           labelKey: 'languageSettings',
-          contentKey: '/dashboard',
+          isNavigable: false,
         ),
       ],
     ),
