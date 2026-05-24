@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:jewelleryyth/app/shell/shell_cubit.dart';
-import 'package:jewelleryyth/core/network/auth_session.dart';
+import 'package:jewelleryyth/features/accounts/domain/usecases/get_customers_use_case.dart';
 import 'package:jewelleryyth/features/auth/domain/usecases/check_auth_session_use_case.dart';
 import 'package:jewelleryyth/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:jewelleryyth/features/auth/presentation/bloc/auth_guard_cubit.dart';
@@ -58,6 +58,8 @@ class GoldWorkshopAdminApp extends StatelessWidget {
             getMoneyStatementsUseCase: sl<GetMoneyStatementsUseCase>(),
             getAccountMetalsUseCase: sl<GetAccountMetalsUseCase>(),
             getItemStatementsUseCase: sl<GetItemStatementsUseCase>(),
+            getCustomersUseCase: sl<GetCustomersUseCase>(),
+
           ),
         ),
         BlocProvider<NotificationsBloc>(create: (_) => sl<NotificationsBloc>()..add(const NotificationsLoaded())),

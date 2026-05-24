@@ -1,3 +1,8 @@
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:jewelleryyth/core/errors/failures.dart';
+import 'package:jewelleryyth/features/accounts/data/dtos/account_response_dto.dart';
+
 import '../../domain/entities/account_entity.dart';
 import '../../domain/entities/item_statement_entity.dart';
 import '../../domain/entities/metal_balance_entity.dart';
@@ -107,4 +112,14 @@ class AccountsRepositoryImpl implements AccountsRepository {
     );
     return response.map((e) => e.toEntity()).toList();
   }
+
+  @override
+  Future<List<AccountEntity>> getCustomers({required AccountType type}) async{
+      final response = await _remoteDataSource.getCustomers(type.name);
+      return response.map((e) => e.toEntity()).toList();
+  }
+
+
+
+
 }

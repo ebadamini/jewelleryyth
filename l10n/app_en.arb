@@ -125,5 +125,14 @@
   "supplier": "SUPPLIER",
   "workshop": "WORKSHOP",
   "expense": "EXPENSE",
-  "other": "Other"
+  "other": "Other",
+  "deleteAccount":"Delete Account",
+  "areYouSure": "Are you sure want to delete this account?",
+  "selectAnOption": "Please select an option",
+  "atLeastSelectAnOption": "At least one option must be selected",
+  "add": "Add",
+  "select": "Select",
+  "confirm": "Confirm",
+  "anOtherThing": "An Other Thing",
+  "customersList": "Customers List"
 }

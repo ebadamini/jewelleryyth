@@ -13,7 +13,7 @@ class Endpoints {
   static const String accountsMetals = '/accounts/metals/';
   static const String accountsItemStatements = '/accounts/item-statements';
   static const String accountCreateAndEdit = '/accounts';
-  static const String accountByType = '/accounts/bytypes';
+  static const String accountByType = '$accounts/bytypes';
 
   static String accountById(int id) => '$accounts/$id';
   static String accountMetals(int id) => '$accounts/metals/$id';

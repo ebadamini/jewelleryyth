@@ -50,8 +50,8 @@ class SidebarMenuData {
 
         ),
         SidebarSubmenuModel(
-          key: 'customers_add',
-          labelKey: 'addCustomer',
+          key: 'create_customer',
+          labelKey: 'createCustomer',
           isNavigable: false,
         ),
       ],

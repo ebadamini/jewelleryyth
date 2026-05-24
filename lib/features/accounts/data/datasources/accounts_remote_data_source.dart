@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:jewelleryyth/features/accounts/data/models/account_model.dart';
+import 'package:jewelleryyth/features/accounts/domain/entities/account_entity.dart';
 import '../../../../core/network/endpoints.dart';
 import '../dtos/account_response_dto.dart';
 import '../dtos/create_account_request_dto.dart';
@@ -22,6 +26,8 @@ abstract class AccountsRemoteDataSource {
     required int accountId,
     required int itemId,
   });
+  Future<List<AccountResponseDto>> getAccountByType(String type);
+  Future<List<AccountResponseDto>> getCustomers(String type);
 }
 
 class AccountsRemoteDataSourceImpl implements AccountsRemoteDataSource {
@@ -113,5 +119,31 @@ class AccountsRemoteDataSourceImpl implements AccountsRemoteDataSource {
     return (response.data as List)
         .map((e) => ItemStatementDto.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  @override
+  Future<List<AccountResponseDto>> getAccountByType(String type) async{
+    final response = await _dio.get(
+        Endpoints.accountByType,
+        queryParameters: {
+          'type': type,
+        },
+    );
+
+    return (response.data as List)
+        .map((e) => AccountResponseDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<List<AccountResponseDto>> getCustomers(String type) async{
+    final response = await _dio.get(Endpoints.accountByType,
+    queryParameters: {'type': type},
+    );
+
+    return (response.data as List)
+        .map((e) => AccountResponseDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+
   }
 }

@@ -10,6 +10,9 @@ sealed class AccountsEvent extends Equatable {
 class AccountsRequested extends AccountsEvent {
   const AccountsRequested();
 }
+class CustomersRequested extends AccountsEvent{
+  const CustomersRequested();
+}
 
 class AccountsSearchChanged extends AccountsEvent {
   const AccountsSearchChanged(this.query);
@@ -27,6 +30,14 @@ class AccountDetailsLoaded extends AccountsEvent {
 
   @override
   List<Object?> get props => [accountId];
+}
+
+class AccountByTypeRequested extends AccountsEvent{
+  const AccountByTypeRequested(this.type);
+  final String type;
+
+  @override
+  List<Object?> get props => [type];
 }
 
 class AccountCreated extends AccountsEvent {

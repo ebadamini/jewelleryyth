@@ -1,12 +1,16 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../photo/domain/photo_entities.dart';
 import 'money_balance_entity.dart';
 
-enum AccountType { customer, supplier, workshop, expense ,other }
+
+enum AccountType {CUSTOMER ,customer, supplier, workshop, expense ,other }
 
 extension AccountTypeX on AccountType {
   String get apiValue {
     switch (this) {
+      case AccountType.CUSTOMER:
+        return 'CUSTOMER';
       case AccountType.customer:
         return 'CUSTOMER';
       case AccountType.supplier:
@@ -22,6 +26,8 @@ extension AccountTypeX on AccountType {
 
   String get label {
     switch (this) {
+      case AccountType.CUSTOMER:
+        return 'CUSTOMER';
       case AccountType.customer:
         return 'CUSTOMER';
       case AccountType.supplier:
@@ -62,7 +68,8 @@ class AccountEntity extends Equatable {
     required this.address,
     required this.metalBalance,
     required this.moneyBalances,
-    required this.createdAt,
+    required this.sequenceNumber,
+    required this.photo,
   });
 
   final int id;
@@ -74,7 +81,8 @@ class AccountEntity extends Equatable {
   final String address;
   final double metalBalance;
   final List<MoneyBalanceEntity> moneyBalances;
-  final String createdAt;
+  final String sequenceNumber;
+  final List<PhotoEntity> photo;
 
   @override
   List<Object?> get props => [
@@ -87,6 +95,7 @@ class AccountEntity extends Equatable {
     address,
     metalBalance,
     moneyBalances,
-    createdAt,
+    sequenceNumber,
+    photo,
   ];
 }

@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:jewelleryyth/core/errors/failures.dart';
 import '../entities/account_entity.dart';
 import '../entities/item_statement_entity.dart';
 import '../entities/metal_balance_entity.dart';
@@ -5,6 +7,7 @@ import '../entities/money_statement_entity.dart';
 
 abstract class AccountsRepository {
   Future<List<AccountEntity>> getAccounts();
+  Future<List<AccountEntity>> getCustomers({required AccountType type});
 
   Future<AccountEntity> getAccountById(int id);
 
@@ -40,4 +43,7 @@ abstract class AccountsRepository {
     required int accountId,
     required int itemId,
   });
+
+
+
 }

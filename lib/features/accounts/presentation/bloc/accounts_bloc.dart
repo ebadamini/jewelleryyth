@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
+import 'package:jewelleryyth/features/accounts/domain/usecases/get_customers_use_case.dart';
 import '../../domain/entities/account_entity.dart';
 import '../../domain/entities/item_statement_entity.dart';
 import '../../domain/entities/metal_balance_entity.dart';
@@ -27,6 +27,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
     required GetMoneyStatementsUseCase getMoneyStatementsUseCase,
     required GetAccountMetalsUseCase getAccountMetalsUseCase,
     required GetItemStatementsUseCase getItemStatementsUseCase,
+    required GetCustomersUseCase getCustomersUseCase,
   })  : _getAccountsUseCase = getAccountsUseCase,
         _getAccountByIdUseCase = getAccountByIdUseCase,
         _createAccountUseCase = createAccountUseCase,
@@ -35,6 +36,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
         _getMoneyStatementsUseCase = getMoneyStatementsUseCase,
         _getAccountMetalsUseCase = getAccountMetalsUseCase,
         _getItemStatementsUseCase = getItemStatementsUseCase,
+        _getCustomersUseCase = getCustomersUseCase,
         super(const AccountsState()) {
     on<AccountsRequested>(_onAccountsRequested);
     on<AccountsSearchChanged>(_onAccountsSearchChanged);
@@ -45,6 +47,8 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
     on<MoneyStatementsRequested>(_onMoneyStatementsRequested);
     on<AccountMetalsRequested>(_onAccountMetalsRequested);
     on<ItemStatementsRequested>(_onItemStatementsRequested);
+    on<CustomersRequested>(_onCustomersRequested);
+
   }
 
   final GetAccountsUseCase _getAccountsUseCase;
@@ -55,6 +59,8 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
   final GetMoneyStatementsUseCase _getMoneyStatementsUseCase;
   final GetAccountMetalsUseCase _getAccountMetalsUseCase;
   final GetItemStatementsUseCase _getItemStatementsUseCase;
+  final GetCustomersUseCase _getCustomersUseCase;
+
 
   Future<void> _onAccountsRequested(
       AccountsRequested event,
@@ -72,6 +78,22 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState> {
       emit(state.copyWith(listStatus: AccountsListStatus.failure, errorMessage: e.toString()));
     }
   }
+
+  Future<void> _onCustomersRequested(CustomersRequested event, Emitter<AccountsState> emit,) async{
+    emit(state.copyWith(listStatus: AccountsListStatus.loading, clearError: true, lastActionSuccess: false));
+    try{
+      final customers = await _getCustomersUseCase();
+      emit(state.copyWith(
+        listStatus: AccountsListStatus.success,
+        accounts: customers,
+        filteredAccounts: _applySearch(customers, state.searchQuery),
+      ));
+    }catch (e){
+      emit(state.copyWith(listStatus: AccountsListStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+
 
   void _onAccountsSearchChanged(
       AccountsSearchChanged event,

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jewelleryyth/app/shell/app_shell.dart';
 import 'package:jewelleryyth/features/auth/presentation/pages/auth_gate_page.dart';
-import 'package:jewelleryyth/features/dashboard/presentation/pages/dashboard_home_page.dart';
 
 import '../../features/accounts/domain/entities/account_entity.dart';
 import '../../features/accounts/domain/entities/metal_balance_entity.dart';
 import '../../features/accounts/presentation/pages/account_details_page.dart';
 import '../../features/accounts/presentation/pages/accounts_page.dart';
 import '../../features/accounts/presentation/pages/create_account_page.dart';
+import '../../features/accounts/presentation/pages/customers_list_page.dart';
 import '../../features/accounts/presentation/pages/edit_account_page.dart';
 import '../../features/accounts/presentation/pages/item_statements_page.dart';
 import '../../features/accounts/presentation/pages/money_statements_page.dart';  // ← اصلاح تایپ
@@ -27,6 +27,8 @@ class AppRouter {
   static const String moneyStatementsRoute = '/accounts/money-statements';
   static const String itemStatementsRoute = '/accounts/item-statements';
   static const String dashboardRoute = '/dashboard';
+  static const String customersRoute = '/customers';
+  static const String createCustomerRoute = '/customers/createCustomer';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -62,7 +64,8 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => EditAccountPage(account: account),
         );
-
+      case customersRoute:
+        return MaterialPageRoute(builder: (_) => CustomersListPage());
       case moneyStatementsRoute:
         final args = settings.arguments as Map<String, dynamic>?;
         if (args == null ||

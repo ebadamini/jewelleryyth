@@ -4,6 +4,7 @@ import 'package:jewelleryyth/app/router/app_router.dart';
 import 'package:jewelleryyth/features/accounts/presentation/pages/accounts_page.dart';
 import 'package:jewelleryyth/features/auth/presentation/bloc/auth_bloc.dart';
 import '../../core/utils/responsive.dart';
+import '../../features/accounts/presentation/pages/customers_list_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_home_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import 'shell_cubit.dart';
@@ -81,8 +82,8 @@ enum ShellPage {
   dashboard_home,
   dashboard_analytics,
   accounts_list,
-  orders_list,
   customers_list,
+  create_customer,
   inventory_gold,
   inventory_waste,
   reports_financial,
@@ -129,8 +130,8 @@ class _ShellContent extends StatelessWidget {
           const DashboardHomePage(), // dashboardHome (0)
           const _PlaceholderPage(title: 'Analytics'), // dashboardAnalytics (1)
           const AccountsPage(),
-          const _PlaceholderPage(title: 'Orders'),
-          const _PlaceholderPage(title: 'Customers'),
+          const CustomersListPage(),
+          const _PlaceholderPage(title: "Create Customer"),
           const _PlaceholderPage(title: 'Gold Stock'),
           const _PlaceholderPage(title: 'Waste'),
           const _PlaceholderPage(title: 'Financial'),

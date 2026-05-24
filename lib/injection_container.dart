@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:jewelleryyth/features/accounts/domain/usecases/get_customers_use_case.dart';
 import 'package:jewelleryyth/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'core/network/auth_session.dart';
 import 'core/network/dio_client.dart';
@@ -39,28 +41,22 @@ Future<void> init() async {
 
   // DataSources
   sl.registerLazySingleton<AuthRemoteDataSource>(
-        () => AuthRemoteDataSourceImpl(dio: sl()),
+    () => AuthRemoteDataSourceImpl(dio: sl()),
   );
   sl.registerLazySingleton<AccountsRemoteDataSource>(
-        () => AccountsRemoteDataSourceImpl(dio: sl()),
+    () => AccountsRemoteDataSourceImpl(dio: sl()),
   );
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
-        () => AuthRepositoryImpl(
-      remoteDataSource: sl(),
-      tokenStorage: sl(),
-    ),
+    () => AuthRepositoryImpl(remoteDataSource: sl(), tokenStorage: sl()),
   );
   sl.registerLazySingleton<AccountsRepository>(
-        () => AccountsRepositoryImpl(
-      remoteDataSource: sl(),
-    ),
+    () => AccountsRepositoryImpl(remoteDataSource: sl()),
   );
 
   // Notification
   sl.registerFactory(() => NotificationsBloc());
-
 
   // UseCases - Auth
   sl.registerLazySingleton(() => CheckAuthSessionUseCase(sl()));
@@ -77,4 +73,5 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetMoneyStatementsUseCase(sl()));
   sl.registerLazySingleton(() => GetAccountMetalsUseCase(sl()));
   sl.registerLazySingleton(() => GetItemStatementsUseCase(sl()));
+  sl.registerLazySingleton(() => GetCustomersUseCase(sl()));
 }

@@ -126,5 +126,15 @@
   "supplier": "تامین کننده",
   "workshop": "دوکان",
   "expense": "مصارف",
-  "other": "دیگران"
+  "other": "دیگران",
+  "deleteAccount": "حذف حساب",
+  "areYouSure": "آیا مطمّن هستید که این حساب را حذف کنید؟ ",
+  "account": "حساب ",
+  "selectAnOption": "'لطفاً یک گزینه انتخاب کنید",
+  "atLeastSelectAnOption": "حداقل یک گزینه باید انتخاب شود",
+  "add": "افزودن",
+  "select": "انتخاب کنید",
+  "confirm": "تأیید",
+  "anOtherThing": "مورد دیگر",
+  "customersList": "لیست مشتریان"
 }

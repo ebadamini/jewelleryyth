@@ -2,7 +2,7 @@ class AppConstants {
   const AppConstants._();
 
   static const String apiBaseUrl = String.fromEnvironment(
-    'API_BASE_URL',
+    'http://91.108.111.102/api',
     defaultValue: 'http://91.108.111.102/api',
   );
 

@@ -85,6 +85,8 @@ class _AccountsPageState extends State<AccountsPage> {
         displayValue: (context, d){
           final l10n = AppLocalizations.of(context);
           switch(d.type){
+            case AccountType.CUSTOMER:
+              return l10n.translate('customers');
             case AccountType.customer:
               return l10n.translate('customers');
             case AccountType.supplier:
@@ -141,11 +143,13 @@ class _AccountsPageState extends State<AccountsPage> {
 
   void _onDelete(AccountEntity account) {
     final isRtl = Localizations.localeOf(context).languageCode == 'fa';
+    final l10n = AppLocalizations.of(context);
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: isRtl ? Text('حذف حساب') : Text("Delete Account"),
-        content: isRtl ? Text('آیا از حذف "${account.name}" مطمئن هستید؟')  : Text('"Are you sure want to delete ${account.name} Account?"'),
+        title:  Text(l10n.translate("deleteAccount")),
+        content: Text('"${l10n.translate("areYouSure")} "'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -186,7 +190,6 @@ class _AccountsPageState extends State<AccountsPage> {
             }
           },
           builder: (context, state) {
-            // ✅ فقط وقتی واقعاً هیچ دیتایی نداریم و در حال لود هستیم
             final isInitialLoading =
                 state.listStatus == AccountsListStatus.loading &&
                     state.accounts.isEmpty;
@@ -228,19 +231,14 @@ class _AccountsPageState extends State<AccountsPage> {
 
             return ReusableDataTable<AccountEntity>(
               controller: _controller,
-
               title: l10n.translate("accountsList"),
               exportFileName: 'accounts',
-              showDateFilter: true,
+              showDateFilter: false,
               showPagination: true,
             );
           },
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: const Color(0xFF111111),
-          child: const Icon(Icons.add),
-        ),
+
       ),
     );
 
